@@ -37,6 +37,6 @@ public class BackappApplication {
                 .description("work in progress")
                 .termsOfServiceUrl("localhost")
                 .version("1.0")
-                .build();
+                .build(); 
     }
 }
