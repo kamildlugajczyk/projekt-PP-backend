@@ -1,12 +1,17 @@
 package pl.polsl.pp.backapp.post;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
 import pl.polsl.pp.backapp.exception.ItemExistsInDatabaseException;
+import pl.polsl.pp.backapp.exception.ZeroResultsException;
 import pl.polsl.pp.backapp.topic.Topic;
 import pl.polsl.pp.backapp.topic.TopicService;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class PostController {
@@ -29,6 +34,20 @@ public class PostController {
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/post/filter/{keyword}")
+    public List<Post> getPostsFoundByKeyword(@PathVariable String keyword)
+    {
+        try {
+            return postService.getPostsContainingKeyword(keyword);
+        } catch (ZeroResultsException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 

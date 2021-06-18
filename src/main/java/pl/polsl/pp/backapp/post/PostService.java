@@ -1,15 +1,18 @@
 package pl.polsl.pp.backapp.post;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.auth.UserPrincipal;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
+import pl.polsl.pp.backapp.exception.ZeroResultsException;
 import pl.polsl.pp.backapp.user.User;
 import pl.polsl.pp.backapp.user.UserRepository;
 
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -27,6 +30,13 @@ public class PostService {
         return postRepository.findAll();
     }
 
+    public List<Post> getPostsContainingKeyword(String keyword) {
+        List<Post> foundPosts = postRepository.findByTextContaining(keyword);
+        if (foundPosts.isEmpty())
+            throw new ZeroResultsException(keyword);
+        return foundPosts;
+    }
+    
     public Post getPost(String id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Post of id " + id + " not found"));

@@ -1,3 +1,4 @@
+/*
 package pl.polsl.pp.backapp.db;
 
 import org.springframework.boot.CommandLineRunner;
@@ -34,61 +35,66 @@ public class DbSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // password - Janek
-        User kowalski = new User("weee@wp.pl", "janek", "$2y$12$AZ4MPx7noGVFkBHRJ29X5Os7bjt50fIqxt86KMdLh4MJCg7h3OhDi", "USER",
+        User zbychu = new User("zbigpajak@wp.pl", "zbychu", "$2a$12$wqIUs8iJ9.AMv9XT6pNMNeLKi3cQYJhzOi2r1KoGvcSxDmHvpJ3LO", "USER",
                 true, 0, new Date(), null);
         // password - kanowak
-        User nowak = new User("wefddfee@wp.pl", "karolnowak", "$2y$12$9dA5sZHTitZPWjDFV5/HdOjkY.fzSvy9LQyd07w5wgnEwTKrLtMSi", "ADMIN",
+        User weronika = new User("weranowa22@interia.pl", "weronika", "$2a$12$MMEXbUyxXSm8zTI5TifIqemOYh6deBZ5K0gbBpKvC4VZDeAU43r26", "USER",
                 true, 0, new Date(), null);
         // password - michalwisnia
-        User wisnia = new User("wisnia123@onet.pl", "michalwisnia", "$2y$12$lQxZDTOPNkj/CtzQJtnbE.liaOatvaaGtmv1GpQpsWhQPn/3rt6eq", "USER",
-                true, 0, new Date(), null);
+        //User wisnia = new User("wisnia123@onet.pl", "michalwisnia", "$2y$12$lQxZDTOPNkj/CtzQJtnbE.liaOatvaaGtmv1GpQpsWhQPn/3rt6eq", "USER",
+        //        true, 0, new Date(), null);
 
+        userRepo.save(zbychu);
+        userRepo.save(weronika);
+        //userRepo.save(wisnia);
 
-        userRepo.save(kowalski);
-        userRepo.save(nowak);
-        userRepo.save(wisnia);
+        Post match1 = new Post(zbychu, new Date(), new Date(), "Dzis wygra Polska");
+        Post match2 = new Post(weronika, new Date(), new Date(), "Ciekawe jak poradzi sobie Lewy?");
+        Post match3 = new Post(zbychu, new Date(), new Date(), "Moze w koncu strzeli gola!");
 
-        Post javaPost1 = new Post(nowak, new Date(), new Date(), "Zrob restart");
-        Post javaPost2 = new Post(kowalski, new Date(), new Date(), "Nie dziala dalej");
+        List<Post> matchPosts = new ArrayList<>();
+        matchPosts.add(match1);
+        matchPosts.add(match2);
+        matchPosts.add(match3);
 
-        List<Post> javaPosts = new ArrayList<>();
-        javaPosts.add(javaPost1);
-        javaPosts.add(javaPost2);
+        Post kitchen1 = new Post(weronika, new Date(), new Date(), "Robię dziś schabowego na obiad.");
+        Post kitchen2 = new Post(zbychu, new Date(), new Date(), "Mniam. Pyszne");
+        Post kitchen3 = new Post(weronika, new Date(), new Date(), "A Ty co robisz na obiad?");
+        Post kitchen4 = new Post(zbychu, new Date(), new Date(), "Zjem coś na mieście.");
 
+        List<Post> kitchenPosts = new ArrayList<>();
+        kitchenPosts.add(kitchen1);
+        kitchenPosts.add(kitchen2);
+        kitchenPosts.add(kitchen3);
+        kitchenPosts.add(kitchen4);
 
-        Post dotNet1 = new Post(kowalski, new Date(), new Date(), "...");
-        Post dotNet2 = new Post(wisnia, new Date(), new Date(), "...");
-        Post dotNet3 = new Post(kowalski, new Date(), new Date(), "...");
+        postRepo.save(match1);
+        postRepo.save(match2);
+        postRepo.save(match3);
+        postRepo.save(kitchen1);
+        postRepo.save(kitchen2);
+        postRepo.save(kitchen3);
+        postRepo.save(kitchen4);
 
-        List<Post> dotNetPosts = new ArrayList<>();
-        dotNetPosts.add(dotNet1);
-        dotNetPosts.add(dotNet2);
-        dotNetPosts.add(dotNet3);
+        Topic topicMatch = new Topic("Mecz Polska-Hiszpania", weronika, new Date(), java.sql.Date.valueOf(LocalDate.now()),
+                "Dzis nasza cudowna kadra gra mecz. Kto wygra Waszym zdaniem?", matchPosts);
+        Topic topicKitchen = new Topic("Co na obiad?", zbychu, new Date(), java.sql.Date.valueOf(LocalDate.now()),
+                "Co jecie dzis na obiad?", kitchenPosts);
 
-        postRepo.save(javaPost1);
-        postRepo.save(javaPost2);
-        postRepo.save(dotNet1);
-        postRepo.save(dotNet2);
-        postRepo.save(dotNet3);
+        topicRepo.save(topicMatch);
+        topicRepo.save(topicKitchen);
 
-        Topic topicJava = new Topic("Spring boot problem", kowalski, new Date(), java.sql.Date.valueOf(LocalDate.now()),
-                "Siema, mam problem ze spring bootem", javaPosts);
-        Topic topicDotNet = new Topic("Dot net problem", wisnia, new Date(), java.sql.Date.valueOf(LocalDate.now()),
-                "Nie dziala mi dot net :(", dotNetPosts);
+        List<Topic> footballTopics = new ArrayList<>();
+        footballTopics.add(topicMatch);
+        List<Topic> kitchenTopics = new ArrayList<>();
+        kitchenTopics.add(topicKitchen);
 
-        topicRepo.save(topicJava);
-        topicRepo.save(topicDotNet);
+        Section sectionFootball = new Section("Football", 0, null, footballTopics);
+        Section sectionKitchen = new Section("Kitchen", 0, null, kitchenTopics);
 
-        List<Topic> itTopics = new ArrayList<>();
-        itTopics.add(topicJava);
-        itTopics.add(topicDotNet);
-        List<Topic> carsTopics = new ArrayList<>();
-
-
-        Section sectionIT = new Section("IT", 0, null, itTopics);
-        Section sectionCars = new Section("Cars", 0, null, carsTopics);
-
-        sectionRepo.save(sectionIT);
-        sectionRepo.save(sectionCars);
+        sectionRepo.save(sectionFootball);
+        sectionRepo.save(sectionKitchen);
     }
 }
+*/
+
