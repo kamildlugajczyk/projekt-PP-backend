@@ -71,4 +71,18 @@ public class SectionController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
+    // TODO dokończyć tego endpointa do zmiany moderatora działu
+    @PostMapping("/section/{id}/moderator")
+    public void changeModerator(@RequestBody SectionRequest request) {
+//        try {
+//             return sectionService.changeModerator(request);
+//        } catch (IdNotFoundInDatabaseException e) {
+//            System.out.println(e.getMessage());
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+//        } catch (RuntimeException  e) {
+//            System.out.println(e.getMessage());
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//        }
+    }
 }
