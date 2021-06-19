@@ -70,7 +70,7 @@ public class TopicService {
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Can't find section of id " + id + " in database!"));
 
-        Topic topic = new Topic(request.getTitle(), user, new Date(), new Date(),
+        Topic topic = new Topic(request.getTitle(), user.getId(), new Date(), new Date(),
                 request.getDescription(), 0, Collections.<Post>emptyList());
 
         section.incTopicsNumber();

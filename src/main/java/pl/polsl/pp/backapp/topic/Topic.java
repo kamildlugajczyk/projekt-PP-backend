@@ -16,7 +16,7 @@ public class Topic {
     @Id
     private String id;
     private String title;
-    private User author;
+    private String authorId;
     private Date createDate;
     private Date lastChange;
     private String description;
@@ -33,10 +33,10 @@ public class Topic {
 //        this.description=description;
 //    }
 
-    public Topic(String title, User author, Date createDate, Date lastChange, String description,
+    public Topic(String title, String authorId, Date createDate, Date lastChange, String description,
                  Integer pageViews, List<Post> posts){
         this.title = title;
-        this.author = author;
+        this.authorId = authorId;
         this.createDate = createDate;
         this.lastChange = lastChange;
         this.description=description;
@@ -46,7 +46,7 @@ public class Topic {
 
     public String getId() {return id;}
     public String getTitle() {return title;}
-    public User getAuthor() {return author;}
+    public String getAuthorId() {return authorId;}
     public Date getCreateDate() {return createDate;}
     public Date getLastChange() {return lastChange;}
     public String getDescription() {return description;}
@@ -55,7 +55,7 @@ public class Topic {
 
     public void setId(String newId) {id=newId;}
     public void setTitle(String newTitle) {title=newTitle;}
-    public void setAuthor(User newAuthor) {author=newAuthor;}
+    public void setAuthor(String authorId) {this.authorId = authorId;}
     public void setCreateDate(Date newCreateDate) {createDate = newCreateDate;}
     public void setLastChange(Date newLastChange) {lastChange = newLastChange;}
     public void setDescription(String newDescription) {description = newDescription;}

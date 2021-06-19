@@ -61,7 +61,7 @@ public class PostService {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + id + " not found"));
 
-        Post post = new Post(user, new Date(), new Date(), request.getText());
+        Post post = new Post(user.getId(), new Date(), new Date(), request.getText());
 
         user.incPostsNumber();
         userRepository.save(user);
