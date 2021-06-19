@@ -15,22 +15,22 @@ public class Section {
     private String id;
     private String name;
     private Integer topicsNumber;
-    private User moderator;
+    private String moderatorId;
 
     @JsonIgnore
     private List<Topic> topics;
 
-    public Section(String name, Integer topicsNumber, User moderator, List<Topic> topics){
+    public Section(String name, Integer topicsNumber, String moderatorId, List<Topic> topics){
         this.name = name;
         this.topicsNumber = topicsNumber;
-        this.moderator = moderator;
+        this.moderatorId = moderatorId;
         this.topics = topics;
     }
 
     public String getId() {return id;}
     public String getName() {return name;}
     public Integer getTopicsNumber() {return topicsNumber;}
-    public User getModerator() {return moderator;}
+    public String getModeratorId() {return moderatorId;}
     public List<Topic> getTopics() {return topics;}
 
     public void setId(String newId) {id=newId;}
@@ -38,7 +38,7 @@ public class Section {
     public void setTopicsNumber(Integer newTopicsNumber) {topicsNumber=newTopicsNumber;}
     public void incTopicsNumber() {topicsNumber += 1;}
     public void decTopicsNumber() {topicsNumber -= 1;}
-    public void setModerator(User newModerator) {moderator=newModerator;}
-    public void setTopics(List<Topic> newTopics) {topics=newTopics;}
+    public void setModeratorId(String moderatorId) {this.moderatorId = moderatorId;}
+    public void setTopics(List<Topic> newTopics) {topics = newTopics;}
 
 }

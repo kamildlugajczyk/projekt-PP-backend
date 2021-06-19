@@ -38,7 +38,7 @@ public class SectionService {
         User moderator = userRepository.findById(request.getModeratorId())
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + request.getModeratorId() + " not found"));
 
-        Section section = new Section(request.getName(), 0, moderator , Collections.<Topic>emptyList());
+        Section section = new Section(request.getName(), 0, moderator.getId(), Collections.<Topic>emptyList());
 
         return sectionRepository.save(section);
     }
@@ -50,7 +50,7 @@ public class SectionService {
         User moderator = userRepository.findById(request.getModeratorId())
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + request.getModeratorId() + " not found"));
 
-        section.setModerator(moderator);
+        section.setModeratorId(moderator.getId());
         section.setName(request.getName());
 
         return sectionRepository.save(section);
