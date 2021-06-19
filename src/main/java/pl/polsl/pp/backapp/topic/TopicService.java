@@ -57,6 +57,7 @@ public class TopicService {
 
     public List<Topic> getMostPopularTopics(Integer keyPageViews){
         List<Topic> mostPopularTopics = topicRepository.findTopicsByPageViewsGreaterThan(keyPageViews);
+        Collections.sort(mostPopularTopics,Collections.reverseOrder(new TopicComparator()));
         return mostPopularTopics;
     }
 
