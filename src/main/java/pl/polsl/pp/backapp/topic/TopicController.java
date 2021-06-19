@@ -6,6 +6,8 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
 import pl.polsl.pp.backapp.exception.ItemExistsInDatabaseException;
 
+import java.util.List;
+
 @RestController
 public class TopicController {
 
@@ -20,10 +22,10 @@ public class TopicController {
         return topicService.getTopics();
     }
 
-    @GetMapping("/topic/{id}")
-    public Topic getTopic(@PathVariable String id) {
+    @GetMapping("/section/{sectionId}/topic/{topicId}")
+    public Topic getTopic(@PathVariable String sectionId, @PathVariable String topicId) {
         try {
-            return topicService.getTopic(id);
+            return topicService.getTopic(sectionId, topicId);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -37,6 +39,17 @@ public class TopicController {
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("mostPopularTopics/{keyPageViews}")
+    public List<Topic> getMostPopularTopics(@PathVariable Integer keyPageViews){
+        try{
+            return topicService.getMostPopularTopics(keyPageViews);
+        }
+        catch (RuntimeException  e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 

@@ -4,12 +4,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.polsl.pp.backapp.auth.UserPrincipal;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
+import pl.polsl.pp.backapp.exception.ZeroResultsException;
 import pl.polsl.pp.backapp.topic.Topic;
 import pl.polsl.pp.backapp.topic.TopicRepository;
 import pl.polsl.pp.backapp.user.User;
 import pl.polsl.pp.backapp.user.UserRepository;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -41,6 +43,13 @@ public class PostService {
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + id + " not found"));
 
         return topic.getPosts();
+    }
+
+    public List<Post> getPostsContainingKeyword(String keyword) {
+        List<Post> foundPosts = postRepository.findByTextContaining(keyword);
+        if (foundPosts.isEmpty())
+            throw new ZeroResultsException(keyword);
+        return foundPosts;
     }
 
     public Post addPostToTopic(String id, PostRequest request) {

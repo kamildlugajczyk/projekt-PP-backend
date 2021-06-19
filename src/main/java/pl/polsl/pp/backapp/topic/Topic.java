@@ -20,6 +20,7 @@ public class Topic {
     private Date createDate;
     private Date lastChange;
     private String description;
+    private Integer pageViews;
 
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
@@ -32,12 +33,14 @@ public class Topic {
 //        this.description=description;
 //    }
 
-    public Topic(String title, User author, Date createDate, Date lastChange, String description, List<Post> posts){
+    public Topic(String title, User author, Date createDate, Date lastChange, String description,
+                 Integer pageViews, List<Post> posts){
         this.title = title;
         this.author = author;
         this.createDate = createDate;
         this.lastChange = lastChange;
         this.description=description;
+        this.pageViews=pageViews;
         this.posts=posts;
     }
 
@@ -47,6 +50,7 @@ public class Topic {
     public Date getCreateDate() {return createDate;}
     public Date getLastChange() {return lastChange;}
     public String getDescription() {return description;}
+    public Integer getPageViews() {return pageViews;}
     public List<Post> getPosts() {return posts;}
 
     public void setId(String newId) {id=newId;}
@@ -55,5 +59,8 @@ public class Topic {
     public void setCreateDate(Date newCreateDate) {createDate = newCreateDate;}
     public void setLastChange(Date newLastChange) {lastChange = newLastChange;}
     public void setDescription(String newDescription) {description = newDescription;}
+    public void setPageViews(Integer newPageViews) {pageViews=newPageViews;}
     public void getPosts(List<Post> newPosts) {posts=newPosts;}
+
+    public void incPageViews() {pageViews +=1;}
 }

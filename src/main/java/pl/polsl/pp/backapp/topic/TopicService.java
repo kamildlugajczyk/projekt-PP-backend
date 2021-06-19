@@ -12,6 +12,7 @@ import pl.polsl.pp.backapp.user.UserRepository;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class TopicService {
@@ -30,11 +31,21 @@ public class TopicService {
         return topicRepository.findAll();
     }
 
-    public Topic getTopic(String id) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + id + " not found"));
+    public Topic getTopic(String sectionId, String topicId) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new IdNotFoundInDatabaseException("Section of id " + sectionId + " not found"));
 
-        return topic;
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + topicId + " not found"));
+
+        topic.incPageViews();
+        for (Topic t : section.getTopics()) {
+            if (t.getId()==topicId) {
+                sectionRepository.save(section);
+                break;
+            }
+        }
+        return topicRepository.save(topic);
     }
 
     public Iterable<Topic> getSectionsTopics(String id) {
@@ -42,6 +53,11 @@ public class TopicService {
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Section of id " + id + " not found"));
 
         return section.getTopics();
+    }
+
+    public List<Topic> getMostPopularTopics(Integer keyPageViews){
+        List<Topic> mostPopularTopics = topicRepository.findTopicsByPageViewsGreaterThan(keyPageViews);
+        return mostPopularTopics;
     }
 
     public Topic addTopicToSection(String id, TopicRequest request) {
@@ -54,7 +70,7 @@ public class TopicService {
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Can't find section of id " + id + " in database!"));
 
         Topic topic = new Topic(request.getTitle(), user, new Date(), new Date(),
-                request.getDescription(), Collections.<Post>emptyList());
+                request.getDescription(), 0, Collections.<Post>emptyList());
 
         section.incTopicsNumber();
         user.incPostsNumber();
