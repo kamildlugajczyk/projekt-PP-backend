@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
 import pl.polsl.pp.backapp.exception.ItemExistsInDatabaseException;
-import pl.polsl.pp.backapp.topic.Topic;
-import pl.polsl.pp.backapp.topic.TopicService;
 
 @RestController
 public class PostController {
@@ -32,10 +30,20 @@ public class PostController {
         }
     }
 
-    @PostMapping("/post")
-    public Post addPost(@RequestBody Post post) {
+    @GetMapping("/topic/{id}/post")
+    public Iterable<Post> getTopicsPosts(@PathVariable String id) {
         try {
-            return postService.addPost(post);
+            return postService.getTopicsPosts(id);
+        } catch (IdNotFoundInDatabaseException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("/topic/{id}/post")
+    public Post addPostToTopic(@PathVariable String id, @RequestBody PostRequest request) {
+        try {
+            return postService.addPostToTopic(id, request);
         } catch (ItemExistsInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
@@ -45,10 +53,10 @@ public class PostController {
         }
     }
 
-    @PutMapping("/post/{id}")
-    public Post updatePost(@PathVariable String id, @RequestBody Post post) {
+    @PutMapping("/topic/{topicId}/post/{postId}")
+    public Post updatePost(@PathVariable String topicId, @PathVariable String postId, @RequestBody PostRequest request) {
         try {
-            return postService.updatePost(id, post);
+            return postService.updatePostInTopic(topicId, postId, request);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -64,10 +72,10 @@ public class PostController {
         }
     }
 
-    @DeleteMapping("/post/{id}")
-    public void deletePost(@PathVariable String id) {
+    @DeleteMapping("/topic/{topicId}/post/{postId}")
+    public void deletePost(@PathVariable String topicId, @PathVariable String postId) {
         try {
-            postService.deletePost(id);
+            postService.deletePost(topicId, postId);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);

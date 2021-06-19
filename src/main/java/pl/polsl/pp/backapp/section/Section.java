@@ -36,6 +36,8 @@ public class Section {
     public void setId(String newId) {id=newId;}
     public void setName(String newName) {name=newName;}
     public void setTopicsNumber(Integer newTopicsNumber) {topicsNumber=newTopicsNumber;}
+    public void incTopicsNumber() {topicsNumber += 1;}
+    public void decTopicsNumber() {topicsNumber -= 1;}
     public void setModerator(User newModerator) {moderator=newModerator;}
     public void setTopics(List<Topic> newTopics) {topics=newTopics;}
 

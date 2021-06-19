@@ -5,9 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
 import pl.polsl.pp.backapp.exception.ItemExistsInDatabaseException;
-import pl.polsl.pp.backapp.section.Section;
-import pl.polsl.pp.backapp.user.User;
-import pl.polsl.pp.backapp.user.UserService;
 
 @RestController
 public class TopicController {
@@ -43,10 +40,10 @@ public class TopicController {
         }
     }
 
-    @PostMapping("/topic")
-    public Topic addTopic(@RequestBody Topic topic) {
+    @PostMapping("/section/{id}/topic")
+    public Topic addTopicToSection(@PathVariable String id, @RequestBody TopicRequest request) {
         try {
-            return topicService.addTopic(topic);
+            return topicService.addTopicToSection(id, request);
         } catch (ItemExistsInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
@@ -56,10 +53,10 @@ public class TopicController {
         }
     }
 
-    @PutMapping("/topic/{id}")
-    public Topic updateTopic(@PathVariable String id, @RequestBody Topic topic) {
+    @PutMapping("/section/{sectionId}/topic/{topicId}")
+    public Topic updateTopic(@PathVariable String sectionId, @PathVariable String topicId, @RequestBody TopicRequest request) {
         try {
-            return topicService.updateTopic(id, topic);
+            return topicService.updateTopicInSection(sectionId, topicId, request);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -75,10 +72,10 @@ public class TopicController {
         }
     }
 
-    @DeleteMapping("/topic/{id}")
-    public void deleteTopic(@PathVariable String id) {
+    @DeleteMapping("/section/{sectionId}/topic/{topicId}")
+    public void deleteTopic(@PathVariable String sectionId, @PathVariable String topicId) {
         try {
-            topicService.deleteTopic(id);
+            topicService.deleteTopic(sectionId, topicId);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);

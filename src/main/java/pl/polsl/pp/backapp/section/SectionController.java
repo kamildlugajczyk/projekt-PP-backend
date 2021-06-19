@@ -31,12 +31,12 @@ public class SectionController {
     }
 
     @PostMapping("/section")
-    public Section addSection(@RequestBody Section section) {
+    public Section addSection(@RequestBody SectionRequest request) {
         try {
-            return sectionService.addSection(section);
-        } catch (ItemExistsInDatabaseException e) {
+            return sectionService.addSection(request);
+        } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (RuntimeException  e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
@@ -44,9 +44,9 @@ public class SectionController {
     }
 
     @PutMapping("/section/{id}")
-    public Section updateSection(@PathVariable String id, @RequestBody Section section) {
+    public Section updateSection(@PathVariable String id, @RequestBody SectionRequest request) {
         try {
-            return sectionService.updateSection(id, section);
+            return sectionService.updateSection(id, request);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
