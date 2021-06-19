@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.auth.UserPrincipal;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
+import pl.polsl.pp.backapp.section.Section;
+import pl.polsl.pp.backapp.section.SectionRepository;
 import pl.polsl.pp.backapp.user.User;
 import pl.polsl.pp.backapp.user.UserRepository;
 
@@ -17,10 +19,12 @@ public class TopicService {
 
     private TopicRepository topicRepository;
     private UserRepository userRepository;
+    private SectionRepository sectionRepository;
 
-    public TopicService(TopicRepository topicRepository, UserRepository userRepository) {
+    public TopicService(TopicRepository topicRepository, UserRepository userRepository, SectionRepository sectionRepository) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     public Iterable<Topic> getTopics() {
@@ -32,6 +36,13 @@ public class TopicService {
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + id + " not found"));
 
         return topic;
+    }
+
+    public Iterable<Topic> getSectionsTopics(String id) {
+        Section section = sectionRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundInDatabaseException("Section of id " + id + " not found"));
+
+        return section.getTopics();
     }
 
     public Topic addTopic(Topic topic) {

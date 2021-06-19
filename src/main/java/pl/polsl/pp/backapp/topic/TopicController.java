@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
 import pl.polsl.pp.backapp.exception.ItemExistsInDatabaseException;
+import pl.polsl.pp.backapp.section.Section;
 import pl.polsl.pp.backapp.user.User;
 import pl.polsl.pp.backapp.user.UserService;
 
@@ -26,6 +27,16 @@ public class TopicController {
     public Topic getTopic(@PathVariable String id) {
         try {
             return topicService.getTopic(id);
+        } catch (IdNotFoundInDatabaseException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/section/{id}/topic")
+    public Iterable<Topic> getSectionsTopics(@PathVariable String id) {
+        try {
+            return topicService.getSectionsTopics(id);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
