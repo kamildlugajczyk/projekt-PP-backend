@@ -19,14 +19,14 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public Iterable<Post> getPosts(){
+    public Iterable<PostDTO> getPosts(){
         return postService.getPosts();
     }
 
     @GetMapping("/post/{id}")
-    public Post getPost(@PathVariable String id) {
+    public PostDTO getPost(@PathVariable String id) {
         try {
-            return postService.getPost(id);
+            return postService.getPostDTO(id);
         } catch (IdNotFoundInDatabaseException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -34,7 +34,7 @@ public class PostController {
     }
 
     @GetMapping("/topic/{id}/post")
-    public Iterable<Post> getTopicsPosts(@PathVariable String id) {
+    public Iterable<PostDTO> getTopicsPosts(@PathVariable String id) {
         try {
             return postService.getTopicsPosts(id);
         } catch (IdNotFoundInDatabaseException e) {
@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @GetMapping("/post/filter/{keyword}")
-    public List<Post> getPostsFoundByKeyword(@PathVariable String keyword)
+    public List<PostDTO> getPostsFoundByKeyword(@PathVariable String keyword)
     {
         try {
             return postService.getPostsContainingKeyword(keyword);
@@ -58,7 +58,7 @@ public class PostController {
     }
 
     @PostMapping("/topic/{id}/post")
-    public Post addPostToTopic(@PathVariable String id, @RequestBody PostRequest request) {
+    public PostDTO addPostToTopic(@PathVariable String id, @RequestBody PostRequest request) {
         try {
             return postService.addPostToTopic(id, request);
         } catch (ItemExistsInDatabaseException e) {
@@ -71,7 +71,7 @@ public class PostController {
     }
 
     @PutMapping("/topic/{topicId}/post/{postId}")
-    public Post updatePost(@PathVariable String topicId, @PathVariable String postId, @RequestBody PostRequest request) {
+    public PostDTO updatePost(@PathVariable String topicId, @PathVariable String postId, @RequestBody PostRequest request) {
         try {
             return postService.updatePostInTopic(topicId, postId, request);
         } catch (IdNotFoundInDatabaseException e) {

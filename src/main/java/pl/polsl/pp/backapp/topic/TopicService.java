@@ -10,6 +10,7 @@ import pl.polsl.pp.backapp.section.SectionRepository;
 import pl.polsl.pp.backapp.user.User;
 import pl.polsl.pp.backapp.user.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,41 +28,76 @@ public class TopicService {
         this.sectionRepository = sectionRepository;
     }
 
-    public Iterable<Topic> getTopics() {
-        return topicRepository.findAll();
+    public Iterable<TopicDTO> getTopics() {
+        List<Topic> topics = topicRepository.findAll();
+        List<TopicDTO> topicsDTO = new ArrayList<>();
+
+        for (Topic topic: topics) {
+            User author = userRepository.findById(topic.getAuthorId())
+                    .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + topic.getAuthorId() + " not found"));
+
+            topicsDTO.add(new TopicDTO(author, topic));
+        }
+
+        return topicsDTO;
     }
 
-    public Topic getTopic(String sectionId, String topicId) {
+    public TopicDTO getTopic(String sectionId, String topicId) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Section of id " + sectionId + " not found"));
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + topicId + " not found"));
 
+        User author = userRepository.findById(topic.getAuthorId())
+                .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + topic.getAuthorId() + " not found"));
+
         topic.incPageViews();
         for (Topic t : section.getTopics()) {
-            if (t.getId()==topicId) {
+            if (t.getId().equals(topicId)) {
                 sectionRepository.save(section);
                 break;
             }
         }
-        return topicRepository.save(topic);
+
+        Topic topicWithId = topicRepository.save(topic);
+
+        return new TopicDTO(author, topicWithId);
     }
 
-    public Iterable<Topic> getSectionsTopics(String id) {
+    public Iterable<TopicDTO> getSectionsTopics(String id) {
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Section of id " + id + " not found"));
 
-        return section.getTopics();
+        List<TopicDTO> topicsDTO = new ArrayList<>();
+
+        for (Topic topic: section.getTopics()) {
+            User author = userRepository.findById(topic.getAuthorId())
+                    .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + topic.getAuthorId() + " not found"));
+
+            topicsDTO.add(new TopicDTO(author, topic));
+        }
+
+        return topicsDTO;
     }
 
-    public List<Topic> getMostPopularTopics(Integer keyPageViews){
+    public List<TopicDTO> getMostPopularTopics(Integer keyPageViews){
         List<Topic> mostPopularTopics = topicRepository.findTopicsByPageViewsGreaterThan(keyPageViews);
         Collections.sort(mostPopularTopics,Collections.reverseOrder(new TopicComparator()));
-        return mostPopularTopics;
+
+        List<TopicDTO> topicsDTO = new ArrayList<>();
+
+        for (Topic topic: mostPopularTopics) {
+            User author = userRepository.findById(topic.getAuthorId())
+                    .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + topic.getAuthorId() + " not found"));
+
+            topicsDTO.add(new TopicDTO(author, topic));
+        }
+
+        return topicsDTO;
     }
 
-    public Topic addTopicToSection(String id, TopicRequest request) {
+    public TopicDTO addTopicToSection(String id, TopicRequest request) {
         UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByLogin(userPrincipal.getUsername()).
                 orElseThrow(() -> new IdNotFoundInDatabaseException("Can't find currently logged in user " +
@@ -82,16 +118,19 @@ public class TopicService {
         section.getTopics().add(topicWithId);
         sectionRepository.save(section);
 
-        return topicWithId;
+        return new TopicDTO(user, topicWithId);
     }
 
-    public Topic updateTopicInSection(String sectionId, String topicId, TopicRequest request) {
+    public TopicDTO updateTopicInSection(String sectionId, String topicId, TopicRequest request) {
 
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Can't find section of id " + sectionId + " in database!"));
 
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new IdNotFoundInDatabaseException("Topic of id " + topicId + " not found"));
+
+        User author = userRepository.findById(topic.getAuthorId())
+                .orElseThrow(() -> new IdNotFoundInDatabaseException("User of id " + topic.getAuthorId() + " not found"));
 
         topic.setLastChange(new Date());
         topic.setDescription(request.getDescription());
@@ -107,7 +146,9 @@ public class TopicService {
             }
         }
 
-        return topicRepository.save(topic);
+        Topic topicWithId = topicRepository.save(topic);
+
+        return new TopicDTO(author, topic);
     }
 
     // TODO dodać zeby tylko autor, moderator albo admin mogli usuwac posty

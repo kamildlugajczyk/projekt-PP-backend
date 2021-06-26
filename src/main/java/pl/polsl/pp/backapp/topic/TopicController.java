@@ -18,12 +18,12 @@ public class TopicController {
     }
 
     @GetMapping("/topic")
-    public Iterable<Topic> getTopics(){
+    public Iterable<TopicDTO> getTopics(){
         return topicService.getTopics();
     }
 
     @GetMapping("/section/{sectionId}/topic/{topicId}")
-    public Topic getTopic(@PathVariable String sectionId, @PathVariable String topicId) {
+    public TopicDTO getTopic(@PathVariable String sectionId, @PathVariable String topicId) {
         try {
             return topicService.getTopic(sectionId, topicId);
         } catch (IdNotFoundInDatabaseException e) {
@@ -33,7 +33,7 @@ public class TopicController {
     }
 
     @GetMapping("/section/{id}/topic")
-    public Iterable<Topic> getSectionsTopics(@PathVariable String id) {
+    public Iterable<TopicDTO> getSectionsTopics(@PathVariable String id) {
         try {
             return topicService.getSectionsTopics(id);
         } catch (IdNotFoundInDatabaseException e) {
@@ -43,7 +43,7 @@ public class TopicController {
     }
 
     @GetMapping("mostPopularTopics/{keyPageViews}")
-    public List<Topic> getMostPopularTopics(@PathVariable Integer keyPageViews){
+    public List<TopicDTO> getMostPopularTopics(@PathVariable Integer keyPageViews){
         try{
             return topicService.getMostPopularTopics(keyPageViews);
         }
@@ -54,7 +54,7 @@ public class TopicController {
     }
 
     @PostMapping("/section/{id}/topic")
-    public Topic addTopicToSection(@PathVariable String id, @RequestBody TopicRequest request) {
+    public TopicDTO addTopicToSection(@PathVariable String id, @RequestBody TopicRequest request) {
         try {
             return topicService.addTopicToSection(id, request);
         } catch (ItemExistsInDatabaseException e) {
@@ -67,7 +67,7 @@ public class TopicController {
     }
 
     @PutMapping("/section/{sectionId}/topic/{topicId}")
-    public Topic updateTopic(@PathVariable String sectionId, @PathVariable String topicId, @RequestBody TopicRequest request) {
+    public TopicDTO updateTopic(@PathVariable String sectionId, @PathVariable String topicId, @RequestBody TopicRequest request) {
         try {
             return topicService.updateTopicInSection(sectionId, topicId, request);
         } catch (IdNotFoundInDatabaseException e) {
