@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.polsl.pp.backapp.auth.UserPrincipal;
 import pl.polsl.pp.backapp.exception.IdNotFoundInDatabaseException;
 import pl.polsl.pp.backapp.post.Post;
+import pl.polsl.pp.backapp.post.PostRepository;
 import pl.polsl.pp.backapp.section.Section;
 import pl.polsl.pp.backapp.section.SectionRepository;
 import pl.polsl.pp.backapp.user.User;
@@ -21,11 +22,14 @@ public class TopicService {
     private TopicRepository topicRepository;
     private UserRepository userRepository;
     private SectionRepository sectionRepository;
+    private PostRepository postRepository;
 
-    public TopicService(TopicRepository topicRepository, UserRepository userRepository, SectionRepository sectionRepository) {
+    public TopicService(TopicRepository topicRepository, UserRepository userRepository, SectionRepository sectionRepository,
+                        PostRepository postRepository) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
         this.sectionRepository = sectionRepository;
+        this.postRepository = postRepository;
     }
 
     public Iterable<TopicDTO> getTopics() {
@@ -169,6 +173,8 @@ public class TopicService {
 
         for (Topic t : section.getTopics()) {
             if (t.getId().equals(topicId)) {
+                List<Post> posts = t.getPosts();
+                posts.removeAll(posts);
                 section.getTopics().remove(t);
                 sectionRepository.save(section);
                 break;

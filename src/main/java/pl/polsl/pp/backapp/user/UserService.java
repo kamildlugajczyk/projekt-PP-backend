@@ -40,14 +40,13 @@ public class UserService {
 
         String hash = this.passwordEncoder.encode(registerForm.getPassword());
 
-        // TODO change roles, status to enum maybe
+
         User user = new User(registerForm.getEmail(), registerForm.getUsername(), hash, "USER",
                 true, 0, new Date(), null);
 
         try {
             return userRepository.save(user);
         } catch (RuntimeException e) {
-            // TODO make email and username unique
             throw new ItemExistsInDatabaseException("User with email (" + registerForm.getEmail() + ") or username (" +
                     registerForm.getUsername() + " exists in DB");
         }
