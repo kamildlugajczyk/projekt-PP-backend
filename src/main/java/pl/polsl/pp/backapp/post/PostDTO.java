@@ -7,6 +7,7 @@ import java.util.Date;
 public class PostDTO {
 
     private String id;
+    private String userId;
     private String login;
     private String role;
     private Boolean status;
@@ -20,9 +21,10 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(String id, String login, String role, Boolean status, Integer postsNumber,
+    public PostDTO(String id, String userId, String login, String role, Boolean status, Integer postsNumber,
                    Date dateJoined, Date lastLogin, Date createDate, Date lastChange, String text) {
         this.id = id;
+        this.userId = userId;
         this.login = login;
         this.role = role;
         this.status = status;
@@ -35,7 +37,8 @@ public class PostDTO {
     }
 
     public PostDTO(User user, Post post) {
-        this.id = user.getId();
+        this.id = post.getId();
+        this.userId = user.getId();
         this.login = user.getLogin();
         this.role = user.getRole();
         this.status = user.getStatus();
@@ -49,6 +52,10 @@ public class PostDTO {
 
     public String getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getLogin() {
