@@ -39,6 +39,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/section", "/section/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/topic", "/topic/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/post", "/post/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/mostPopularTopics/**").permitAll()
                 .antMatchers("/","/login", "/register").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
