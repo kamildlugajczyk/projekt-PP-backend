@@ -71,7 +71,7 @@ public class AuthenticationController {
         }
     }
 
-    @RequestMapping(value = "/authorities", method = RequestMethod.GET)
+    @GetMapping(value = "/authorities")
     public Collection<SimpleGrantedAuthority> authorities() {
         return (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
     }
