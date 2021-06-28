@@ -171,10 +171,19 @@ public class TopicService {
 
         section.decTopicsNumber();
 
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new IdNotFoundInDatabaseException("Can't find section of id " + sectionId + " in database!"));
+
         for (Topic t : section.getTopics()) {
             if (t.getId().equals(topicId)) {
-                List<Post> posts = t.getPosts();
+                List<Post> posts = topic.getPosts();
+
+                for (Post p: posts) {
+                    postRepository.deleteById(p.getId());
+                }
+
                 posts.removeAll(posts);
+
                 section.getTopics().remove(t);
                 sectionRepository.save(section);
                 break;
